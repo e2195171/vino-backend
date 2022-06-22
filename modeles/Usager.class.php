@@ -116,11 +116,13 @@ class Usager extends Modele {
         
 		$rows = Array();
 		$requete ='SELECT
-                    u.id as usager_id_usager,
-                    u.nom as usager_nom,
+                    u.id as id_usager,
+                    u.nom as nom_usager,
+                    u.prenom,
                     u.courriel,
                     u.phone,
-                    u.adresse as usager_adresse,
+                    u.adresse as adresse_usager,
+                    u.id_ville,
                     u.image_url,
                     v.nom
                     FROM vino__usager u

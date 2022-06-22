@@ -64,18 +64,18 @@ class UsagerControlleur
 		// 	$this->retour['erreur'] = $this->erreur(401);
 		// }
 		// else {
-			if(isset($requete->url_elements[0]))	// Action d'ajouter usager
+			if(isset($requete->url_elements[0]) && ($requete->url_elements[2] === 'usager'))	// Action d'ajouter usager
 			{
-				switch($requete->url_elements[0]) 
-					{
-						case 'registre': // Peut être supprimer //!!!!!!!!!!!!!!!!
-							$this->retour["data"] = $this->ajouterUneUsager($requete->parametres);
-							break;
-						default:
-							$this->retour['erreur'] = $this->erreur(400);
-							unset($this->retour['data']);
-							break;
-					}
+
+                if(isset($requete->url_elements[2]) && ($requete->url_elements[2] === 'modif'))
+                {
+                    $this->retour["data"] = $this->modifUsager($requete->parametres);
+                }
+                else
+                {
+                    $this->retour['erreur'] = $this->erreur(400);
+                    unset($this->retour['data']);
+                }
 			}
 			else{
 				$this->retour['erreur'] = $this->erreur(400);
@@ -179,10 +179,9 @@ class UsagerControlleur
 	}
 	
 	/**
-	 * Modifie les informations de la bière $id_biere
-	 * @param int $id_biere Identifiant de la bière
-	 * @param Array Les informations de la bière
-	 * @return int $id_biere Identifiant de la bière modifier
+	 * Modifie les informations du profil
+	 * @param Array Les informations d'usager'
+	 * @return int $id_usager Identifiant d'usager
 	 * @access private
 	 */	
 	private function modifUsager($id, $data)

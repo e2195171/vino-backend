@@ -171,9 +171,15 @@ class CellierControlleur
                                 unset($this->retour['data']);
                             }
                         }
+                        else if(isset($requete->url_elements[2]) && $requete->url_elements[2] === 'suppression')
+                        {
+
+                            $this->retour["data"] = $this->effacerCellier($id_cellier);
+                            break;
+                        }
                         else
                         {
-                            $this->retour['erreur'] = $this->erreur(403);
+                            $this->retour['erreur'] = $this->erreur(404);
                             unset($this->retour['data']);
                         }
                     }
@@ -254,6 +260,21 @@ class CellierControlleur
 		$res = $oCellier->effacerBouteille($id_cellier, $id_bouteille);
 		return $res; 
 	} //ici
+
+    /**
+	 * Effacer le cellier
+	 * @param int $id_cellier Identifiant de cellier
+	 * @return boolean Succès ou échec
+	 * @access private
+	 */	
+	private function effacerCellier($id_cellier)
+	{
+		$res = Array();
+		$oCellier = new Cellier();
+		$res = $oCellier->effacerCellier($id_cellier);
+		return $res; 
+	}
+
 
     /**
 	 * Méthode qui augmente de 1 le nombre de bouteilles avec $id au cellier

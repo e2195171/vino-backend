@@ -36,6 +36,9 @@ class UsagerControlleur
                     $id_usager = (int)$requete->url_elements[1];
                     $this->retour["data"] = $this->getCelliersParUsager($id_usager);
                     break;
+                case 'ville':
+                    $this->retour["data"] = $this->getListeVilles();
+                    break;
                 default:
                     $this->retour['erreur'] = $this->erreur(400);
                     unset($this->retour['data']);
@@ -65,7 +68,7 @@ class UsagerControlleur
 			{
 				switch($requete->url_elements[0]) 
 					{
-						case 'registre':
+						case 'registre': // Peut être supprimer //!!!!!!!!!!!!!!!!
 							$this->retour["data"] = $this->ajouterUneUsager($requete->parametres);
 							break;
 						default:
@@ -268,7 +271,20 @@ class UsagerControlleur
     //   	return $access;
     // }
 
-	
+    /**
+	 * Retourne les informations des villes	 
+     * @access private
+	 * @return Array Tableau de toutes les villes
+	 */	
+	private function getListeVilles()
+	{
+		$res = Array();
+		$oUsager = new Usager();
+		$res = $oUsager->getListeVilles();
+		
+		return $res; 
+	}
+
 	private function erreur($code, $data="")
 	{
 		//header('HTTP/1.1 400 Bad Request');

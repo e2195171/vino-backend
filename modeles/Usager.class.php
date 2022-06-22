@@ -75,7 +75,7 @@ class Usager extends Modele {
         {   
             if(extract($data) > 0)
             {
-                $requete = "INSERT INTO vino__usager (`nom`, `prenom`, `courriel`, `phone`, `adresse`, `mot_passe`, `confirmpassword`) VALUES ('".$nom. "','".$prenom. "','".$courriel. "','".$phone. "','".$adresse. "','".$mot_passe. "','". $confirmpassword."')";
+                $requete = "INSERT INTO vino__usager (`nom`, `prenom`, `courriel`, `phone`, `adresse`, `id_ville`, `mot_passe`, `confirmpassword`) VALUES ('".$nom. "','".$prenom. "','".$courriel. "','".$phone. "','".$adresse. "','".$id_ville. "','".$mot_passe. "','". $confirmpassword."')";
 
                 $this->_db->query($requete);
             }
@@ -230,6 +230,26 @@ class Usager extends Modele {
         } else {
             echo "Une erreur s'est produite.";
         }
+	}
+
+       /**
+	 * Cette méthode annonce une liste des villes
+	 * @access public
+	 * @return Array $data Tableau des villes
+	 */
+	public function getListeVilles()
+	{
+        
+		$rows = Array();
+		$res = $this->_db->query('Select * from vino__ville');
+		if($res->num_rows)
+		{
+			while($row = $res->fetch_assoc())
+			{
+				$rows[] = $row;
+			}
+		}
+		return $rows;
 	}
 
 }

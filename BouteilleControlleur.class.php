@@ -98,7 +98,8 @@ class BouteilleControlleur
             }
             else
             {
-                $this->retour["data"] = $this->modifCellier($requete->parametres);
+                $this->retour['erreur'] = $this->erreur(400);
+                unset($this->retour['data']);
             }
         }
         else
@@ -240,22 +241,6 @@ class BouteilleControlleur
 		$oBouteille = new Bouteille();
 		
 		$res = $oBouteille->modifBouteille($data);
-		return $res; 
-	}
-
-    
-    /**
-	 * Modifie les informations du cellier
-	 * @access private
-	 * @param Array Les informations de la bouteille
-	 * @return int $id Identifiant de la bouteille dans le cellier à modifier
-	 */	
-	private function modifCellier($data)
-	{
-		$res = Array();
-		$oBouteille = new Cellier();
-		
-		$res = $oBouteille->modifCellier($data);
 		return $res; 
 	}
 	

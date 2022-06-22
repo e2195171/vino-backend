@@ -29,6 +29,8 @@
                     cb.prix, 
                     cb.millesime, 
                     cb.garde_jusqua,
+					a.date_achat,
+					-- n.notes,
                     c.id as cellier_id_cellier,
                     c.nom, 
                     c.adresse as cellier_adresse,
@@ -59,6 +61,8 @@
                     INNER JOIN vino__type t ON b.id_type = t.id
                     INNER JOIN vino__usager u ON c.id_usager = u.id
                     INNER JOIN vino__ville v ON u.id_ville = v.id
+					INNER JOIN vino__achats a ON cb.id_achats = a.id
+					-- INNER JOIN vino__notes n ON cb.id_usager = n.id
                     WHERE id_cellier = '. $id_cellier .'
                     AND u.id = '. $id_usager .'
                     '; 
@@ -347,10 +351,37 @@
             $resQuery = $this->_db->query($query);	
 		}
 		return $resQuery;
-	} //ici
+	}
+
+	/**
+	 * Cette méthode modifie la bouteille
+	 * @access public
+	 * @param Array $param Paramètres et valeur à modifier 
+	 * @return int id de la bouteille ou 0 en cas d'échec
+	 */
+	public function modifBouteille($param)	
+	{
+		$aSet = Array();
+		$resQuery = false;
+        $id_bouteille = $param['id_bouteille'];
+		$id_cellier = $param['id_cellier'];
+        if (is_array($param) || is_object($param)) {
+            foreach ($param as $cle => $valeur) {
+                $aSet[] = ($cle . "= '".$valeur. "'");
+            }
+            if(count($aSet) > 0)
+            {
+                $query = "Update vino__cellier_bouteille SET ";
+                $query .= join(", ", $aSet);
+                $query .= (" WHERE id_bouteille = ". $id_bouteille ." AND id_cellier = ". $id_cellier);
+				return $query; 
+                $resQuery = $this->_db->query($query);
+            }
+            return ($resQuery ? $id_bouteille : 0);
+        } else {
+            echo "Une erreur s'est produite.";
+        }
+	}//ici
 }
-
-
-
 
 ?>

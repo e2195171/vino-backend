@@ -29,8 +29,7 @@
                     cb.prix, 
                     cb.millesime, 
                     cb.garde_jusqua,
-					a.date_achat,
-					-- n.notes,
+                    a.date_achat,
                     c.id as cellier_id_cellier,
                     c.nom, 
                     c.adresse as cellier_adresse,
@@ -61,8 +60,7 @@
                     INNER JOIN vino__type t ON b.id_type = t.id
                     INNER JOIN vino__usager u ON c.id_usager = u.id
                     INNER JOIN vino__ville v ON u.id_ville = v.id
-					INNER JOIN vino__achats a ON cb.id_achats = a.id
-					-- INNER JOIN vino__notes n ON cb.id_usager = n.id
+                    INNER JOIN vino__achats a ON cb.id_achats = a.id
                     WHERE id_cellier = '. $id_cellier .'
                     AND u.id = '. $id_usager .'
                     '; 
@@ -265,20 +263,24 @@
 	 */
 	public function modifCellier($param)	
 	{
-		$aSet = Array();
+        $aSet = Array();
 		$resQuery = false;
-        $id = $param['id'];
+        $id = $param['cellier_id_cellier'];
         if (is_array($param) || is_object($param)) 
-        {
+        {   
             foreach ($param as $cle => $valeur) 
             {
-                $aSet[] = ($cle . "= '".$valeur. "'");
+                if ($cle !== 'cellier_id_cellier') 
+                {
+                    $aSet[] = ($cle . "= '".$valeur. "'");
+                }
             }
             if(count($aSet) > 0)
             {
                 $query = "Update vino__cellier SET ";
                 $query .= join(", ", $aSet);
                 $query .= (" WHERE id = ". $id); 
+                
                 $resQuery = $this->_db->query($query);
             }
             return ($resQuery ? $id : 0);

@@ -124,6 +124,42 @@ class CellierControlleur
         return $this->retour;	
 	}
 
+/**
+	 * Méthode qui gère les action en POST
+     * @access public
+	 * @param Requete $requete
+	 * @return Mixed Données retournées
+	 */
+	public function postAction(Requete $requete)	// Modification
+	{
+        if(isset($requete->url_elements[0]) && $requete->url_elements[0] === 'cellier')	// cellier 
+        {
+            if(isset($requete->url_elements[1]) && is_numeric($requete->url_elements[1]))	// l'id de cellier
+            {
+                if(isset($requete->url_elements[2]) && $requete->url_elements[2] === 'modif')	// l'id de cellier
+                {
+                    $this->retour["data"] = $this->modifCellier($requete->parametres);
+                }
+                else
+                {
+                    $this->retour['erreur'] = $this->erreur(400);
+                    unset($this->retour['data']);
+                }
+            }
+            else
+            {
+                $this->retour['erreur'] = $this->erreur(400);
+                unset($this->retour['data']);
+            }
+        }
+        else
+        {
+            $this->retour['erreur'] = $this->erreur(400);
+            unset($this->retour['data']);
+        }
+        return $this->retour;
+	}
+
     /**
 	 * Méthode qui gère les action en POST
      * @access public
@@ -368,6 +404,20 @@ class CellierControlleur
 		return $res; 
 	}
     	
+    /**
+	 * Modifie les informations du cellier
+	 * @access private
+	 * @param Array Les informations de la bouteille
+	 * @return int $id Identifiant de la bouteille dans le cellier à modifier
+	 */	
+	private function modifCellier($data)
+	{
+		$res = Array();
+		$oCellier = new Cellier();
+		$res = $oCellier->modifCellier($data);
+		return $res; 
+	}
+
     /**
 	 * Afficher des erreurs
 	 * @access private

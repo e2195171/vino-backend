@@ -319,6 +319,35 @@
 		}
 		return $resQuery;
 	}
+
+    /**
+	 * Effacer une bouteille
+	 * @access public
+	 * @param Array $id_bouteille $id_cellier Identifiant de la bouteille  
+	 * @return Boolean
+	 */
+	public function effacerBouteille($id_cellier, $id_bouteille) 
+	{
+		$resQuery = false;
+		if(isset($id_cellier, $id_bouteille))
+		{
+			$id_bouteille = $this->_db->real_escape_string($id_bouteille);
+			$id_cellier = $this->_db->real_escape_string($id_cellier);
+
+			$query = "SET foreign_key_checks = 0";
+            $resQuery = $this->_db->query($query);
+
+			// $query = "DELETE from vino__achats where vino__cellier_bouteille = ". $id_cellier ;
+			// $resQuery = $this->_db->query($query);
+
+			$query = "DELETE from vino__cellier_bouteille where id_bouteille = ". $id_bouteille ." AND id_cellier = ". $id_cellier ;
+			$resQuery = $this->_db->query($query);
+
+			$query = "SET foreign_key_checks = 1";
+            $resQuery = $this->_db->query($query);	
+		}
+		return $resQuery;
+	} //ici
 }
 
 

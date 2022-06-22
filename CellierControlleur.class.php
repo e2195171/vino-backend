@@ -146,6 +146,11 @@ class CellierControlleur
                         if(isset($requete->url_elements[2]) && is_numeric($requete->url_elements[2])) // id_bouteille
                         {
                             $id_bouteille = (int)$requete->url_elements[2];
+                            if(isset($requete->url_elements[3]) && $requete->url_elements[3] === 'suppression')
+                            {
+                            $this->retour["data"] = $this->effacerBouteille($id_cellier, $id_bouteille);
+                            break;
+                            }
                             if(isset($requete->url_elements[3]) && is_numeric($requete->url_elements[3])) // id_achats
                             {
                                 $id_achats = (int)$requete->url_elements[3];
@@ -235,6 +240,20 @@ class CellierControlleur
 		$res = $oCellier->ajouterBouteilleCellier($data, $id_usager);
 		return $res; 
 	}
+
+    /**
+	 * Effacer la bouteille $id_bouteille
+	 * @param int $id_bouteille Identifiant de la bouteille
+	 * @return boolean Succès ou échec
+	 * @access private
+	 */	
+	private function effacerBouteille($id_cellier, $id_bouteille)
+	{
+		$res = Array();
+		$oCellier = new Cellier();
+		$res = $oCellier->effacerBouteille($id_cellier, $id_bouteille);
+		return $res; 
+	} //ici
 
     /**
 	 * Méthode qui augmente de 1 le nombre de bouteilles avec $id au cellier

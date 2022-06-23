@@ -30,6 +30,7 @@
                     cb.millesime, 
                     cb.garde_jusqua,
                     a.date_achat,
+                    n.note,
                     c.id as cellier_id_cellier,
                     c.nom, 
                     c.adresse as cellier_adresse,
@@ -61,6 +62,7 @@
                     INNER JOIN vino__usager u ON c.id_usager = u.id
                     INNER JOIN vino__ville v ON u.id_ville = v.id
                     INNER JOIN vino__achats a ON cb.id_achats = a.id
+                    INNER JOIN vino__notes n ON n.cellier_bouteille_id_achats = a.id
                     WHERE id_cellier = '. $id_cellier .'
                     AND u.id = '. $id_usager .'
                     '; 
@@ -361,7 +363,7 @@
 	 * @param Array $param Paramètres et valeur à modifier 
 	 * @return int id de la bouteille ou 0 en cas d'échec
 	 */
-	public function modifBouteille($param)	
+	public function modifierBouteille($param)	
 	{
 		$aSet = Array();
 		$resQuery = false;
@@ -379,7 +381,7 @@
 				return $query; 
                 $resQuery = $this->_db->query($query);
             }
-            return ($resQuery ? $id_bouteille : 0);
+            return ($resQuery ? $id_bouteille : 0) && ($resQuery ? $id_cellier : 0);
         } else {
             echo "Une erreur s'est produite.";
         }

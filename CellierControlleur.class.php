@@ -145,18 +145,49 @@ class CellierControlleur
                     $this->retour['erreur'] = $this->erreur(400);
                     unset($this->retour['data']);
                 }
+                if(isset($requete->url_elements[0]) && $requete->url_elements[0] === 'cellier')	// cellier 
+                {
+                    if(isset($requete->url_elements[1]) && is_numeric($requete->url_elements[1])) // l'id de cellier
+                    {
+                        if(isset($requete->url_elements[2]) && is_numeric($requete->url_elements[2])) // l'id de bouteille
+                        {
+                            if(isset($requete->url_elements[3]) && is_numeric($requete->url_elements[3])) // l'id des achats
+                            {
+                                if(isset($requete->url_elements[4]) && $requete->url_elements[4] === 'modif')
+                                {
+                                    $this->retour["data"] = $this->modifierBouteille($requete->parametres);
+                                }
+                                else
+                                {
+                                    $this->retour['erreur'] = $this->erreur(401);
+                                    unset($this->retour['data']);
+                                }
+                            }
+                            else
+                            {
+                                $this->retour['erreur'] = $this->erreur(402);
+                                unset($this->retour['data']);
+                            }
+                        }
+                        else
+                        {
+                            $this->retour['erreur'] = $this->erreur(403);
+                            unset($this->retour['data']);
+                        }
+                    }
+                    else
+                    {
+                        $this->retour['erreur'] = $this->erreur(404);
+                        unset($this->retour['data']);
+                    }
+                }
+                else
+                {
+                    $this->retour['erreur'] = $this->erreur(405);
+                    unset($this->retour['data']);
+                }
             }
-            else
-            {
-                $this->retour['erreur'] = $this->erreur(400);
-                unset($this->retour['data']);
-            }
-        }
-        else
-        {
-            $this->retour['erreur'] = $this->erreur(400);
-            unset($this->retour['data']);
-        }
+        }    
         return $this->retour;
 	}
 
@@ -176,16 +207,20 @@ class CellierControlleur
             switch($requete->url_elements[0]) 
             {                    
                 case 'cellier':
-                    if(isset($requete->url_elements[1]) && is_numeric($requete->url_elements[1])) // id_cellier
+                    if(isset($requete->url_elements[1]) && is_numeric($requete->url_elements[1])) // l'id de cellier
                     {
                         $id_cellier = (int)$requete->url_elements[1];
-                        if(isset($requete->url_elements[2]) && is_numeric($requete->url_elements[2])) // id_bouteille
+                        if(isset($requete->url_elements[2]) && is_numeric($requete->url_elements[2])) // l'id de bouteille
                         {
                             $id_bouteille = (int)$requete->url_elements[2];
-                            if(isset($requete->url_elements[3]) && $requete->url_elements[3] === 'suppression')
+                            if(isset($requete->url_elements[3]) && is_numeric($requete->url_elements[3])) // l'id des achats
                             {
-                            $this->retour["data"] = $this->effacerBouteille($id_cellier, $id_bouteille);
-                            break;
+                                $id_achats = (int)$requete->url_elements[3];
+                                if(isset($requete->url_elements[4]) && $requete->url_elements[4] === 'suppression')
+                                {
+                                    $this->retour["data"] = $this->effacerBouteille($id_cellier, $id_bouteille, $id_achats);
+                                    break;
+                                }
                             }
                             if(isset($requete->url_elements[3]) && is_numeric($requete->url_elements[3])) // id_achats
                             {
@@ -224,7 +259,7 @@ class CellierControlleur
                         $this->retour['erreur'] = $this->erreur(404);
                         unset($this->retour['data']);
                     }
-                default:
+                    default:
                     $this->retour['erreur'] = $this->erreur(405);
                     unset($this->retour['data']);
                     break;
@@ -289,13 +324,27 @@ class CellierControlleur
 	 * @return boolean Succès ou échec
 	 * @access private
 	 */	
-	private function effacerBouteille($id_cellier, $id_bouteille)
+	private function effacerBouteille($id_cellier, $id_bouteille, $id_achats)
 	{
 		$res = Array();
 		$oCellier = new Cellier();
-		$res = $oCellier->effacerBouteille($id_cellier, $id_bouteille);
+		$res = $oCellier->effacerBouteille($id_cellier, $id_bouteille, $id_achats);
 		return $res; 
-	} //ici
+	}
+
+    /**
+	 * Modifie les informations de la bouteille
+	 * @access private
+	 * @param Array Les informations de la bouteille
+	 * @return int $data Identifiant de la bouteille dans le cellier à modifier
+	 */	
+	private function modifierBouteille($data)
+	{
+		$res = Array();
+		$oCellier = new Cellier();
+		$res = $oCellier->modifierBouteille($data);
+		return $res; 
+	}
 
     /**
 	 * Effacer le cellier
@@ -310,7 +359,6 @@ class CellierControlleur
 		$res = $oCellier->effacerCellier($id_cellier);
 		return $res; 
 	}
-
 
     /**
 	 * Méthode qui augmente de 1 le nombre de bouteilles avec $id au cellier
@@ -340,7 +388,7 @@ class CellierControlleur
 		
 		return $this->getBouteillesDansCeCellier($id_cellier, $id_usager);
 	}
-    	
+
     /**
 	 * Modifie les informations du cellier
 	 * @access private
@@ -354,7 +402,7 @@ class CellierControlleur
 		$res = $oCellier->modifCellier($data);
 		return $res; 
 	}
-
+    
     /**
 	 * Afficher des erreurs
 	 * @access private

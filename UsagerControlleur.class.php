@@ -64,11 +64,12 @@ class UsagerControlleur
 		// 	$this->retour['erreur'] = $this->erreur(401);
 		// }
 		// else {
-			if(isset($requete->url_elements[0]) && ($requete->url_elements[2] === 'usager'))	// Action d'ajouter usager
+			if(isset($requete->url_elements[0]) && ($requete->url_elements[0] === 'usager'))	// Action d'ajouter usager
 			{
 
-                if(isset($requete->url_elements[2]) && ($requete->url_elements[2] === 'modif'))
+                if(isset($requete->url_elements[1]) && ($requete->url_elements[1] === 'modif'))
                 {
+                    
                     $this->retour["data"] = $this->modifUsager($requete->parametres);
                 }
                 else
@@ -184,11 +185,11 @@ class UsagerControlleur
 	 * @return int $id_usager Identifiant d'usager
 	 * @access private
 	 */	
-	private function modifUsager($id, $data)
+	private function modifUsager($data)
 	{
 		$res = Array();
 		$oUsager = new Usager();
-		$res = $oUsager->modifierUsager($id, $data);
+		$res = $oUsager->modifierUsager($data);
 		return $res; 
 	}
 	

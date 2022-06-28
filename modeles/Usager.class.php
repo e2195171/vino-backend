@@ -215,16 +215,20 @@ class Usager extends Modele {
 	{
 		$aSet = Array();
 		$resQuery = false;
-        $id = $param['id'];
+        $id = $param['id_usager'];
         if (is_array($param) || is_object($param)) {
             foreach ($param as $cle => $valeur) {
-                $aSet[] = ($cle . "= '".$valeur. "'");
+                if ($cle !== 'id_usager') 
+                {
+                    $aSet[] = ($cle . "= '".$valeur. "'");
+                }
             }
             if(count($aSet) > 0)
             {
                 $query = "Update vino__usager SET ";
                 $query .= join(", ", $aSet);
                 $query .= ("WHERE id = ". $id); 
+                
                 $resQuery = $this->_db->query($query);
                 
             }

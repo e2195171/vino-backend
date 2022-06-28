@@ -123,6 +123,7 @@ class Usager extends Modele {
                     u.phone,
                     u.adresse as adresse_usager,
                     u.id_ville,
+                    u.mot_passe,
                     u.image_url,
                     v.nom
                     FROM vino__usager u

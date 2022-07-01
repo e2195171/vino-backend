@@ -14,6 +14,77 @@
  class Cellier extends Modele {
     
     /**
+	 * Cette méthode annonce une liste des bouteilles dans tous les celliers d'usager.
+	 * @access public
+	 * @return Array $data Tableau des données représentants la liste des bouteilles d'usager.
+	 */
+	public function getBouteillesUsager($id_usager)
+	{
+        $rows = Array();
+		$requete ='SELECT 
+                    cb.id_cellier,
+                    cb.id_bouteille, 
+                    cb.id_achats, 
+                    cb.quantite,
+                    cb.prix, 
+                    cb.millesime, 
+                    cb.garde_jusqua,
+                    a.date_achat,
+                    n.note,
+                    c.id as cellier_id_cellier,
+                    c.nom as cellier_nom, 
+                    c.adresse as cellier_adresse,
+                    c.id_usager,
+                    b.id as bouteille_id_bouteille,
+                    b.nom, 
+                    b.image, 
+                    b.code_saq,
+                    b.description,
+                    b.prix_saq,
+                    b.url_saq,
+                    b.url_img,
+                    b.format, 
+                    b.id_type, 
+                    b.id_pays,
+                    p.nom as pays_nom,
+                    t.type,
+                    u.id as usager_id_usager,
+                    u.nom as usager_nom,
+                    u.courriel,
+                    u.phone,
+                    u.adresse as usager_adresse,
+                    v.nom as ville_nom
+                    from vino__cellier_bouteille cb
+                    INNER JOIN vino__cellier c ON cb.id_cellier = c.id
+                    INNER JOIN vino__bouteille b ON cb.id_bouteille = b.id
+                    INNER JOIN vino__pays p ON b.id_pays = p.id
+                    INNER JOIN vino__type t ON b.id_type = t.id
+                    INNER JOIN vino__usager u ON c.id_usager = u.id
+                    INNER JOIN vino__ville v ON u.id_ville = v.id
+                    INNER JOIN vino__achats a ON cb.id_achats = a.id
+                    INNER JOIN vino__notes n ON n.cellier_bouteille_id_achats = a.id
+                    WHERE u.id = '. $id_usager .'
+                    '; 
+		if(($res = $this->_db->query($requete)) ==	 true)
+		{
+			if($res->num_rows)
+			{
+				while($row = $res->fetch_assoc())
+				{
+					$row['nom'] = trim(utf8_encode($row['nom']));
+					$rows[] = $row;
+				}
+			}
+		}
+		else 
+		{
+			throw new Exception("Erreur de requête sur la base de donnée", 1);
+			//$this->_db->error;
+		}
+		return $rows;
+	}
+
+    /**
 	 * Cette méthode annonce une liste des bouteilles importées de la SAQ disponibles pour ajouter au cellier.
 	 * @access public
 	 * @return Array $data Tableau des données représentants la liste des bouteilles.

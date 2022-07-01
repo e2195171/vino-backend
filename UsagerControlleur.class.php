@@ -39,6 +39,10 @@ class UsagerControlleur
                 case 'ville':
                     $this->retour["data"] = $this->getListeVilles();
                     break;
+                case 'bouteilles':
+                    $id_usager = (int)$requete->url_elements[1];
+                    $this->retour["data"] = $this->getBouteillesUsager($id_usager);
+                    break;
                 default:
                     $this->retour['erreur'] = $this->erreur(400);
                     unset($this->retour['data']);
@@ -151,6 +155,21 @@ class UsagerControlleur
 		$res = $oUsager->getUsager($id);
 		return $res; 
 	}
+
+    /**
+	 * Méthode qui retourne les bouteilles d'usager avec id_usager
+     * @access public
+     * @param int $id_usager
+	 * @return Array Tableau de bouteilles retournée
+	 */
+    private function getBouteillesUsager($id_usager) 
+    {
+        $res = Array();
+		$oCellier = new Cellier();
+		$res = $oCellier->getBouteillesUsager($id_usager);
+		
+		return $res; 
+    }
 
     /**
 	 * Retourne les informations de la bière $id_biere

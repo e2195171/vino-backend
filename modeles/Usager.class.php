@@ -239,7 +239,7 @@ class Usager extends Modele {
         }
 	}
 
-       /**
+    /**
 	 * Cette méthode annonce une liste des villes
 	 * @access public
 	 * @return Array $data Tableau des villes

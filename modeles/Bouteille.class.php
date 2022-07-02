@@ -153,6 +153,30 @@ class Bouteille extends Modele {
     //     }
 	// }
 
+	/**
+	 * Cette méthode ajoute une ou des bouteilles au cellier
+	 * @access public
+	 * @param Array $data Tableau des données représentants la bouteille
+	 * @return int Renvoie l'id de la bouteille ajoutée
+	 */
+	public function ajouterBouteilleNonListees($data)
+	{
+        if (is_array($data) || is_object($data)) 
+        {    
+            if(extract($data) > 0)
+            {
+				$requete = "INSERT INTO vino__bouteille(`nom`, `image`, `url_saq`, `format`, `id_type`, `id_pays`) 
+				VALUES ('".$nom. "','http://127.0.0.1:8000/webservice/php/images/bouteille.jpg','http://127.0.0.1:8000/webservice/php/images/Bouteille.png','". $format."','". $id_type."','". $id_pays."')";
+                $this->_db->query($requete);
+				
+            }
+            return ($this->_db->insert_id ? $this->_db->insert_id : $requete);
+				
+        } else {
+            echo "Une erreur s'est produite.";
+        }
+	}
+
     /**
 	 * Cette méthode modifie le nombre de bouteilles au cellier
 	 * @access public
@@ -214,9 +238,44 @@ class Bouteille extends Modele {
             echo "Une erreur s'est produite.";
         }
 	}
+
+	/**
+	 * Cette méthode annonce une liste des types
+	 * @access public
+	 * @return Array $data Tableau des types
+	 */
+	public function getListeTypes()
+	{
+		$rows = Array();
+		$res = $this->_db->query('Select * from vino__type');
+		if($res->num_rows)
+		{
+			while($row = $res->fetch_assoc())
+			{
+				$rows[] = $row;
+			}
+		}
+		return $rows;
+	}
+
+	/**
+	 * Cette méthode annonce une liste du pays
+	 * @access public
+	 * @return Array $data Tableau du pays
+	 */
+	public function getListePays()
+	{
+		$rows = Array();
+		$res = $this->_db->query('Select * from vino__pays');
+		if($res->num_rows)
+		{
+			while($row = $res->fetch_assoc())
+			{
+				$rows[] = $row;
+			}
+		}
+		return $rows;
+	}
 }
-
-
-
 
 ?>

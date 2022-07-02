@@ -67,7 +67,13 @@ class BouteilleControlleur
             {
                 case 'bouteilles': 
                     $this->retour["data"] = $this->getBouteillesInserer(); //SAQ
-                    break;   
+                    break; 
+                case 'type':
+                    $this->retour["data"] = $this->getListeTypes();
+                    break;
+                case 'pays':
+                    $this->retour["data"] = $this->getListePays();
+                    break;  
                 default:
                     $this->retour['erreur'] = $this->erreur(400);
                     unset($this->retour['data']);
@@ -151,6 +157,7 @@ class BouteilleControlleur
         }
         else 
         {
+            $this->retour["data"] = $this->ajouterBouteilleNonListees($requete->parametres);
             $this->retour["data"] = $this->ajouterUnCellier($requete->parametres);
         }
 		return $this->retour;
@@ -273,6 +280,19 @@ class BouteilleControlleur
 	//	return $res; 
 	//}
 
+    /**
+	 * Ajouter une bouteille
+	 * @access private
+	 * @param Array Les informations de la bouteille
+	 * @return int $id_bouteille Identifiant de la nouvelle bouteille
+	 */	
+	private function ajouterBouteilleNonListees($data)
+	{
+		$res = Array();
+		$oBouteille = new Bouteille();
+		$res = $oBouteille->ajouterBouteilleNonListees($data);
+		return $res; 
+	}
 	
     /**
 	 * Retourne les informations des bouteilles dans tout les celliers	 
@@ -351,6 +371,31 @@ class BouteilleControlleur
 		return $res; 
 	}
 
+    /**
+	 * Retourne les informations des types 
+     * @access private
+	 * @return Array Tableau de toutes des types
+	 */	
+	private function getListeTypes()
+	{
+		$res = Array();
+		$oBouteille = new Bouteille();
+		$res = $oBouteille->getListeTypes();
+		return $res; 
+	}
+    
+    /**
+	 * Retourne les informations des pays	 
+     * @access private
+	 * @return Array Tableau de toutes des pays
+	 */	
+	private function getListePays()
+	{
+		$res = Array();
+		$oBouteille = new Bouteille();
+		$res = $oBouteille->getListePays();
+		return $res; 
+	}
     	
     /**
 	 * Afficher des erreurs

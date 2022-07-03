@@ -103,7 +103,7 @@
                     a.date_achat,
                     n.note,
                     c.id as cellier_id_cellier,
-                    c.nom, 
+                    c.nom as cellier_nom, 
                     c.adresse as cellier_adresse,
                     c.id_usager,
                     b.id as bouteille_id_bouteille,
@@ -255,6 +255,38 @@
         //return $this->_db->query($requete);
 	}
     
+    /**
+	 * Cette méthode annonce les celliers d'usager.
+	 * @access public
+	 * @return Array $data Tableau des données représentants la bouteille.
+	 */
+	public function getCeCellier($id)
+	{
+        $rows = Array();
+		$requete ='SELECT *
+                    FROM vino__cellier c
+                    WHERE id = '. $id .'
+                    '; 
+		if(($res = $this->_db->query($requete)) ==	 true)
+		{
+			if($res->num_rows)
+			{
+				while($row = $res->fetch_assoc())
+				{
+					$row['nom'] = trim(utf8_encode($row['nom']));
+					$rows[] = $row;
+				}
+			}
+		}
+		else 
+		{
+			throw new Exception("Erreur de requête sur la base de donnée", 1);
+			//$this->_db->error;
+		}
+		return $rows;
+	}
+
+
 	/**
 	 * Cette méthode annonce les celliers d'usager.
 	 * @access public

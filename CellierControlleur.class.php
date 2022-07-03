@@ -39,8 +39,8 @@ class CellierControlleur
                             }
                             else
                             {
-                                $this->retour['erreur'] = $this->erreur(400);
-                                unset($this->retour['data']);
+                                $this->retour = $this->getCeCellier($id_cellier);
+                                break;
                             }
                         }
                         else
@@ -271,6 +271,23 @@ class CellierControlleur
         }
         return $this->retour;	
 	}
+
+    
+    /**
+	 * Méthode qui retourne les bouteilles dans le cellier avec id_cellier et id_usager
+     * @access public
+	 * @param int $id_cellier du cellier
+     * @param int $id_bouteille du cellier
+	 * @return Array Tableau d'information sur la bouteille retournée
+	 */
+    private function getCeCellier($id_cellier) 
+    {
+        $res = Array();
+		$oCellier = new Cellier();
+		$res = $oCellier->getCeCellier($id_cellier);
+		
+		return $res; 
+    }
 
 	/**
 	 * Méthode qui retourne les bouteilles dans le cellier avec id_cellier et id_usager

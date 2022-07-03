@@ -158,7 +158,7 @@ class BouteilleControlleur
         else 
         {
             $this->retour["data"] = $this->ajouterBouteilleNonListees($requete->parametres);
-            $this->retour["data"] = $this->ajouterUnCellier($requete->parametres);
+            //$this->retour["data"] = $this->ajouterUnCellier($requete->parametres);
         }
 		return $this->retour;
 	}

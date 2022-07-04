@@ -101,9 +101,8 @@
                     cb.millesime, 
                     cb.garde_jusqua,
                     a.date_achat,
-                    n.note,
                     c.id as cellier_id_cellier,
-                    c.nom as cellier_nom, 
+                    c.nom, 
                     c.adresse as cellier_adresse,
                     c.id_usager,
                     b.id as bouteille_id_bouteille,
@@ -133,7 +132,6 @@
                     INNER JOIN vino__usager u ON c.id_usager = u.id
                     INNER JOIN vino__ville v ON u.id_ville = v.id
                     INNER JOIN vino__achats a ON cb.id_achats = a.id
-                    INNER JOIN vino__notes n ON n.cellier_bouteille_id_achats = a.id
                     WHERE id_cellier = '. $id_cellier .'
                     AND u.id = '. $id_usager .'
                     '; 
@@ -166,17 +164,21 @@
 	{
         if (is_array($data) || is_object($data)) 
         {    
+            
             if(extract($data) > 0)
             {
                 $requete = "INSERT INTO vino__achats(`date_achat`) VALUES ('".$date_achat."')";
+                
                 $this->_db->query($requete);
                 $id_achats = $this->_db->insert_id;
-
-                $requete = "INSERT INTO vino__cellier_bouteille(`id_cellier`, `id_bouteille`, `id_achats`, `quantite`, `prix`, `millesime`, `garde_jusqua`) VALUES ('".$id_cellier. "','".$id_bouteille. "','". $id_achats. "','". $quantite. "','". $prix."','". $millesime."','". $garde_jusqua."')";
+                
+                $requete = "INSERT INTO vino__cellier_bouteille(`id_cellier`, `id_bouteille`, `id_achats`, `quantite`, `prix`, `millesime`, `garde_jusqua`) 
+                            VALUES ('".$id_cellier. "','".$id_bouteille. "','". $id_achats. "','". $quantite. "','". $prix."','". $millesime."','". $garde_jusqua."')";
+                
                 $this->_db->query($requete);
                                 
-                $requete = "INSERT INTO vino__notes(`note`, `id_usager`, `cellier_bouteille_id_cellier`, `cellier_bouteille_id_bouteille`, `cellier_bouteille_id_achats` ) VALUES ('".$notes. "','". $id_usager. "','". $id_cellier."','". $id_bouteille."','". $id_achats. "')";
-                $this->_db->query($requete);
+                // $requete = "INSERT INTO vino__notes(`note`, `id_usager`, `cellier_bouteille_id_cellier`, `cellier_bouteille_id_bouteille`, `cellier_bouteille_id_achats` ) VALUES ('".$notes. "','". $id_usager. "','". $id_cellier."','". $id_bouteille."','". $id_achats. "')";
+                // $this->_db->query($requete);
             }
             return ($this->_db->insert_id ? $this->_db->insert_id : $requete);
         } else {

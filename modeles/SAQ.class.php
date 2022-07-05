@@ -32,8 +32,9 @@ class SAQ extends Modele {
 	 * @param int $nombre
 	 * @param int $debut
 	 */
-	public function getProduits($nombre = 24, $page = 1) {
-        
+	public function getProduits($data) {
+        $page = $data['page'];
+        $nombre = $data['nombre'];
 		$s = curl_init();
 		$url = "https://www.saq.com/fr/produits/vin?p=".$page."&product_list_limit=".$nombre."&product_list_order=name_asc";//ici
 		//$url = "https://www.saq.com/fr/produits/vin/vin-rouge?p=1&product_list_limit=24&product_list_order=name_asc";
@@ -111,7 +112,7 @@ class SAQ extends Modele {
 	private function recupereInfo($noeud) {
 		
 		$info = new stdClass();
-		$info -> img = $noeud -> getElementsByTagName("img") -> item(0) -> getAttribute('src'); //TODO : Nettoyer le lien
+		$info -> img = $noeud -> getElementsByTagName("img") -> item(0) -> getAttribute('src');
 		;
 		$a_titre = $noeud -> getElementsByTagName("a") -> item(0);
 		$info -> url = $a_titre->getAttribute('href');
@@ -146,9 +147,11 @@ class SAQ extends Modele {
 		$aElements = $noeud -> getElementsByTagName("div");
 		foreach ($aElements as $node) {
 			if ($node -> getAttribute('class') == 'saq-code') {
+
 				if(preg_match("/\d+/", $node -> textContent, $aRes))
 				{
 					$info -> desc -> code_SAQ = trim($aRes[0]);
+                    
 				}
 			}
 		}
@@ -158,13 +161,12 @@ class SAQ extends Modele {
 			if ($node -> getAttribute('class') == 'price') {
 				$info -> prix = trim($node -> textContent);
 			}
-		}
-		
+		}		
 		return $info;
 	}
 
 	private function ajouteProduit($bte) {
-    
+        
 		$retour = new stdClass();
 		$retour -> succes = false;
 		$retour -> raison = '';
@@ -180,11 +182,13 @@ class SAQ extends Modele {
 
 			$id_type = $id_type['id'];
             $id_pays = $id_pays['id'];
+            $img = '//s7d9.scene7.com/is/image/SAQ/'.$bte -> desc -> code_SAQ.'_is?$saq-rech-prod-gril$';
+            $url_img = '//s7d9.scene7.com/is/image/SAQ/'.$bte -> desc -> code_SAQ.'_is?$saq-rech-prod-gril$';
 
 			$rowsType = $this -> _db -> query("select id from vino__bouteille where code_saq = '" . $bte -> desc -> code_SAQ . "'");
             $rowsPays = $this -> _db -> query("select id from vino__bouteille where code_saq = '" . $bte -> desc -> code_SAQ . "'");
 			if ($rowsType -> num_rows < 1) {
-				$this -> stmt -> bind_param("sissssisss", $bte -> nom, $id_type, $bte -> img, $bte -> desc -> code_SAQ, $id_pays, $bte -> desc -> texte, $bte -> prix, $bte -> url, $bte -> img, $bte -> desc -> format);
+				$this -> stmt -> bind_param("sissssisss", $bte -> nom, $id_type, $img, $bte -> desc -> code_SAQ, $id_pays, $bte -> desc -> texte, $bte -> prix, $bte -> url, $url_img, $bte -> desc -> format);
 
                 $retour -> succes = $this -> stmt -> execute();
 				$retour -> raison = self::INSERE;

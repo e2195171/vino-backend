@@ -25,7 +25,7 @@ class SaqControlleur
         switch($requete->url_elements[0]) 
         {
             case 'update':
-                $this->retour["data"] = $this->updateSAQ();
+                $this->retour["data"] = $this->updateSAQ($requete->parametres);
                 break;
             default:
                 $this->retour['erreur'] = $this->erreur(400);
@@ -40,11 +40,11 @@ class SaqControlleur
 	 * @param Array Les informations
 	 * @return Array Les bouteilles ajoutées
 	 */	
-    private function updateSAQ()
+    private function updateSAQ($data)
     {
         $res = Array();
 		$oSAQ = new SAQ();
-		$res = $oSAQ->getProduits();
+		$res = $oSAQ->getProduits($data);
 		return $res;
     }
 	

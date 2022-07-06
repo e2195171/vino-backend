@@ -187,7 +187,7 @@ class Bouteille extends Modele {
             if(extract($data) > 0)
             {
 				$requete = "INSERT INTO vino__bouteille(`nom`, `image`, `url_saq`, `format`, `id_type`, `id_pays`) 
-				VALUES ('".$nom. "','http://127.0.0.1:8000/webservice/php/images/bouteille.jpg','http://127.0.0.1:8000/webservice/php/images/Bouteille.png','". $format."','". $id_type."','". $id_pays."')";
+				VALUES ('".$nom. "','../../assets/img/bouteille.jpg','../../assets/img/bouteille.jpg','". $format."','". $id_type."','". $id_pays."')";
                 $this->_db->query($requete);
 				
             }

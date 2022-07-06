@@ -20,13 +20,34 @@ class Bouteille extends Modele {
 	public function getBouteillesInserer()
 	{
 		$rows = Array();
-		$res = $this->_db->query('Select * from vino__bouteille');
-		if($res->num_rows)
+		$requete ='SELECT 
+                    b.id as id_bouteille,
+                    b.nom, 
+                    b.image, 
+                    b.code_saq,
+                    b.id_type, 
+                    b.id_pays,
+                    t.type,
+                    p.nom as pays
+                    FROM vino__bouteille AS b
+                    INNER JOIN vino__type AS t ON b.id_type = t.id
+                    INNER JOIN vino__pays AS p ON b.id_pays = p.id
+                    ;'; 
+		if(($res = $this->_db->query($requete)) ==	 true)
 		{
-			while($row = $res->fetch_assoc())
+			if($res->num_rows)
 			{
-				$rows[] = $row;
+				while($row = $res->fetch_assoc())
+				{
+					$row['nom'] = trim(utf8_encode($row['nom']));
+					$rows[] = $row;
+				}
 			}
+		}
+		else 
+		{
+			throw new Exception("Erreur de requête sur la base de donnée", 1);
+			//$this->_db->error;
 		}
 		return $rows;
 	}

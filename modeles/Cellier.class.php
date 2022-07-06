@@ -89,7 +89,7 @@
 	 * @access public
 	 * @return Array $data Tableau des données représentants la liste des bouteilles.
 	 */
-	public function getBouteillesDansCeCellier($id_cellier, $id_usager)
+	public function getBouteillesDansCeCellier($id_cellier)
 	{
         $rows = Array();
 		$requete ='SELECT 
@@ -133,7 +133,6 @@
                     INNER JOIN vino__ville v ON u.id_ville = v.id
                     INNER JOIN vino__achats a ON cb.id_achats = a.id
                     WHERE id_cellier = '. $id_cellier .'
-                    AND u.id = '. $id_usager .'
                     '; 
 		if(($res = $this->_db->query($requete)) ==	 true)
 		{
@@ -193,10 +192,11 @@
 	 * @param int $nombre Un identifiant qui permet de déterminer l'action - augmenter la quantité de 1 ou diminuer de 1 
 	 * @return Boolean Succès ou échec de l'ajout.
 	 */
-	public function modifierQuantiteBouteilleCellier($id_cellier, $id_bouteille, $id_achats, $id_usager, $nombre) //$id_cellier??? et $id_bouteille
+	public function modifierQuantiteBouteilleCellier($id_cellier, $id_bouteille, $id_achats, $nombre) //$id_cellier??? et $id_bouteille
 	{
-        $qte = $this->getQuantite($id_cellier, $id_bouteille, $id_achats, $id_usager);	
-		if($qte >= 0 && $nombre == -1){
+        $qte = $this->getQuantite($id_cellier, $id_bouteille, $id_achats);	
+        
+		if($qte && $nombre == -1){
 			$requete = "UPDATE vino__cellier_bouteille
                         SET quantite = GREATEST(quantite + ". $nombre. ", 0)
                         WHERE id_cellier = ".$id_cellier."
@@ -207,7 +207,7 @@
 			$res = $this->_db->query($requete);
 			return $res;
 
-		} else if($qte >= 0 && $nombre == 1){
+		} else if($qte && $nombre == 1){
 			$requete = "UPDATE vino__cellier_bouteille
                         SET quantite = GREATEST(quantite + ". $nombre. ", 0)
                         WHERE id_cellier = ".$id_cellier."
@@ -227,16 +227,16 @@
 	 * @param int $id L'id de la bouteille.
 	 * @return Number Le quantité de bouteilles.
 	 */
-	public function getQuantite($id_cellier, $id_bouteille, $id_achats, $id_usager){
+	public function getQuantite($id_cellier, $id_bouteille, $id_achats){
        	$requete = "SELECT cb.quantite FROM vino__cellier_bouteille cb
                     INNER JOIN vino__cellier c ON cb.id_cellier = c.id
                     WHERE cb.id_cellier = ".$id_cellier."
                     AND cb.id_bouteille = ".$id_bouteille."
                     AND cb.id_achats = ".$id_achats."
-                    AND c.id_usager = ".$id_usager.";";
+                    ;";
         if(($res = $this->_db->query($requete)) ==	 true)
 		{
-            $res = $this->_db->query($requete)->fetch_object()->quantite;
+            $res = $this->_db->query($requete);
 		}
 		else 
 		{

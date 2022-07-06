@@ -4,13 +4,13 @@
  * Classe qui génère ma connection à MySQL à travers un singleton
  *
  *
- * @author Equipe de 4
- * @version 2.0
+ * @author Jonathan Martel
+ * @version 1.0
  * @see : http://www.apprendre-php.com/tutoriels/tutoriel-45-singleton-instance-unique-d-une-classe.html
- * @since 2.0 Correction du singleton, PHP 7.1 valide la visibilité du constructeur de l'objet hérité. Retrait de l'héritage et réécriture du singleton.
+ *
  *
  */
-class MonSQL {
+class MonSQL extends mysqli{
 	/**
 	 * @var $_instance
 	 * @access private
@@ -23,9 +23,18 @@ class MonSQL {
 	 *
 	 * @param void
 	 * @return void
+	 * @private
 	 */
 	private function __construct($host, $user, $password, $database) 
 	{
+		parent::__construct($host, $user, $password, $database);
+
+		if ($this-> connect_errno) {
+			echo "Echec lors de la connexion à MySQL : (" . $this -> connect_errno . ") " . $this-> connect_error;
+		}
+		else {
+			$this->set_charset("utf8");	
+		}
 		
 	}
 
@@ -39,13 +48,7 @@ class MonSQL {
 	public static function getInstance() {
 
 		if (is_null(self::$_instance)) {
-			self::$_instance = new mysqli(HOST, USER, PASSWORD, DATABASE);
-			if (self::$_instance-> connect_errno) {
-				echo "Echec lors de la connexion à MySQL : (" . self::$_instance -> connect_errno . ") " . self::$_instance-> connect_error;
-			}
-			else {
-				self::$_instance->set_charset("UTF-8");	
-			}
+			self::$_instance = new self(HOST, USER, PASSWORD, DATABASE);
 		}
 
 		return self::$_instance;

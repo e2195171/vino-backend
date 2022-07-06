@@ -34,7 +34,7 @@ class CellierControlleur
                             if(isset($requete->url_elements[2]) && is_numeric($requete->url_elements[2]))
                             {
                                 $id_usager = (int)$requete->url_elements[2];
-                                $this->retour["data"] = $this->getBouteillesDansCeCellier($id_cellier, $id_usager);
+                                $this->retour["data"] = $this->getBouteillesDansCeCellier($id_cellier);
                                 break;
                             }
                             else
@@ -86,7 +86,7 @@ class CellierControlleur
                         $id_achats = (int)$requete->url_elements[3];
                         if(isset($requete->url_elements[4]) && $requete->url_elements[4] === 'quantite')
                         {
-                            $this->retour["data"] = $this->ajouterQuantiteBouteille($id_cellier, $id_bouteille, $id_achats, $id_usager);
+                            $this->retour["data"] = $this->ajouterQuantiteBouteille($id_cellier, $id_bouteille, $id_achats);
                             
                         }
                         else
@@ -227,7 +227,7 @@ class CellierControlleur
                                 $id_achats = (int)$requete->url_elements[3];
                                 if(isset($requete->url_elements[4]) && $requete->url_elements[4] === 'quantite')
                                 {
-                                    $this->retour["data"] = $this->boireQuantiteBouteille($id_cellier, $id_bouteille, $id_achats, $id_usager);
+                                    $this->retour["data"] = $this->boireQuantiteBouteille($id_cellier, $id_bouteille, $id_achats);
                                     break;
                                 }
                                 else
@@ -296,11 +296,11 @@ class CellierControlleur
      * @param int $id_bouteille du cellier
 	 * @return Array Tableau d'information sur la bouteille retournée
 	 */
-    private function getBouteillesDansCeCellier($id_cellier, $id_usager) 
+    private function getBouteillesDansCeCellier($id_cellier) 
     {
         $res = Array();
 		$oCellier = new Cellier();
-		$res = $oCellier->getBouteillesDansCeCellier($id_cellier, $id_usager);
+		$res = $oCellier->getBouteillesDansCeCellier($id_cellier);
 		
 		return $res; 
     }
@@ -383,12 +383,12 @@ class CellierControlleur
 	 * @param int $id de la bouteille
 	 * @return Array Tableau des bouteilles retournée
 	 */
-	public function ajouterQuantiteBouteille($id_cellier, $id_bouteille, $id_achats, $id_usager)
+	public function ajouterQuantiteBouteille($id_cellier, $id_bouteille, $id_achats)
     {
         $oCellier = new Cellier();
-	    $oCellier->modifierQuantiteBouteilleCellier($id_cellier, $id_bouteille, $id_achats, $id_usager, 1);
+	    $oCellier->modifierQuantiteBouteilleCellier($id_cellier, $id_bouteille, $id_achats, 1);
         
-        return $this->getBouteillesDansCeCellier($id_cellier, $id_usager);
+        return $this->getBouteillesDansCeCellier($id_cellier);
     }
 
     /** Fonctions pour les actions  DELETE */
@@ -398,12 +398,12 @@ class CellierControlleur
 	 * @param int $id de la bouteille
 	 * @return Array Tableau des bouteilles retournée
 	 */
-	public function boireQuantiteBouteille($id_cellier, $id_bouteille, $id_achats, $id_usager)
+	public function boireQuantiteBouteille($id_cellier, $id_bouteille, $id_achats)
     {
 		$oCellier = new Cellier;
-		$oCellier->modifierQuantiteBouteilleCellier($id_cellier, $id_bouteille, $id_achats, $id_usager, -1);
+		$oCellier->modifierQuantiteBouteilleCellier($id_cellier, $id_bouteille, $id_achats, -1);
 		
-		return $this->getBouteillesDansCeCellier($id_cellier, $id_usager);
+		return $this->getBouteillesDansCeCellier($id_cellier);
 	}
 
     /**

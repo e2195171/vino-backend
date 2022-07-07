@@ -89,7 +89,7 @@ class Usager extends Modele {
         {   
             if(extract($data) > 0)
             {
-                $requete = "INSERT INTO vino__usager (`nom`, `prenom`, `courriel`, `phone`, `adresse`, `id_ville`, `mot_passe`, `confirmpassword`) VALUES ('".$nom. "','".$prenom. "','".$courriel. "','".$phone. "','".$adresse. "','".$id_ville. "','".$mot_passe. "','". $confirmpassword."')";
+                $requete = "INSERT INTO vino__usager (`nom`, `prenom`, `courriel`, `phone`, `adresse`, `id_ville`, `mot_passe`, `confirmpassword`, `image_url`) VALUES ('".$nom. "','".$prenom. "','".$courriel. "','".$phone. "','".$adresse. "','".$id_ville. "','".$mot_passe. "','". $confirmpassword."', '../../assets/img/simon.jpg')";
 
                 $this->_db->query($requete);
             }

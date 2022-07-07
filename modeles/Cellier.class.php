@@ -176,8 +176,8 @@
                 
                 $this->_db->query($requete);
                                 
-                // $requete = "INSERT INTO vino__notes(`note`, `id_usager`, `cellier_bouteille_id_cellier`, `cellier_bouteille_id_bouteille`, `cellier_bouteille_id_achats` ) VALUES ('".$notes. "','". $id_usager. "','". $id_cellier."','". $id_bouteille."','". $id_achats. "')";
-                // $this->_db->query($requete);
+                $requete = "INSERT INTO vino__notes(`note`, `id_usager`, `cellier_bouteille_id_cellier`, `cellier_bouteille_id_bouteille`, `cellier_bouteille_id_achats` ) VALUES (NULL,'". $id_usager. "','". $id_cellier."','". $id_bouteille."','". $id_achats. "')";
+                $this->_db->query($requete);
             }
             return ($this->_db->insert_id ? $this->_db->insert_id : $requete);
         } else {
@@ -444,9 +444,17 @@
 
 			$query = "SET foreign_key_checks = 0";
             $resQuery = $this->_db->query($query);
+
 			$query = "DELETE from vino__cellier_bouteille where id_bouteille = ". $id_bouteille ." AND id_cellier = ". $id_cellier ." AND id_achats = ". $id_achats ;
 			$resQuery = $this->_db->query($query);
-			$query = "SET foreign_key_checks = 1";
+			
+            $query = "DELETE from vino__notes where cellier_bouteille_id_cellier = ". $id_cellier." AND cellier_bouteille_id_bouteille = ". $id_bouteille ." AND cellier_bouteille_id_achats = ". $id_achats;
+			$resQuery = $this->_db->query($query);
+
+            $query = "DELETE from vino__achats where id = ". $id_achats;
+			$resQuery = $this->_db->query($query);
+
+            $query = "SET foreign_key_checks = 1";
             $resQuery = $this->_db->query($query);	
 		}
 		return $resQuery;
@@ -462,12 +470,14 @@
 	{
 		$aSet = Array();
 		$resQuery = false;
-
+        
         $id_bouteille = $param['id_bouteille'];
 		$id_cellier = $param['id_cellier'];
         $id_achats = $param['id_achats'];
-
+        $id_usager = $param['id_usager'];
+        
         if (is_array($param) || is_object($param)) {
+            
             foreach ($param as $cle => $valeur) {
                 $aSet[] = ($cle . "= '".$valeur. "'");
             }
@@ -475,9 +485,11 @@
             {
                 $query = "Update vino__cellier_bouteille, vino__achats, vino__notes SET ";
                 $query .= join(", ", $aSet);
-                $query .= (" WHERE id_bouteille = ". $id_bouteille ." AND id_cellier = ". $id_cellier ." AND id_achats = ". $id_achats);
+                $query .= " WHERE id_bouteille = ". $id_bouteille ." AND id = ". $id_achats ." AND cellier_bouteille_id_bouteille = ". $id_bouteille ." AND cellier_bouteille_id_cellier = ". $id_cellier ." AND cellier_bouteille_id_achats = ". $id_achats ." AND id_cellier = ". $id_cellier ." AND id_usager = ". $id_usager ." AND id_achats = ". $id_achats;
+                
                 $resQuery = $this->_db->query($query);
             }
+
             return ($resQuery ? $id_bouteille : 0) && ($resQuery ? $id_cellier : 0);
         } else {
             echo "Une erreur s'est produite.";

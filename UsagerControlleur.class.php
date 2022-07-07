@@ -29,8 +29,14 @@ class UsagerControlleur
                     $this->retour["data"] = $this->getListerUsager(); // Renvoie tous les utilisateurs de la base de données
                     break;
                 case 'usager':
-                    $id_usager = (int)$requete->url_elements[1];
-                    $this->retour["data"] = $this->getUsager($id_usager);  
+                    if (isset($requete->url_elements[1])) 
+                    {
+                        $id_usager = (int)$requete->url_elements[1];
+                        $this->retour["data"] = $this->getUsager($id_usager);  
+                    } else
+                    {
+                        $this->retour["data"] = $this->getListerUsager(); 
+                    }
                     break;
                 case 'cellier':
                     $id_usager = (int)$requete->url_elements[1];

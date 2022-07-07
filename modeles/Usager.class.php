@@ -20,14 +20,28 @@ class Usager extends Modele {
 	public function getListeUser()
 	{
 		$rows = Array();
-        $requete ='SELECT * FROM vino__usager;'; 
-
+        $requete ='SELECT
+                    u.id as id_usager,
+                    u.nom as nom_usager,
+                    u.prenom,
+                    u.courriel,
+                    u.phone,
+                    u.adresse as adresse_usager,
+                    u.id_ville,
+                    u.mot_passe,
+                    u.image_url,
+                    v.nom
+                    FROM vino__usager u
+                    INNER JOIN vino__ville v ON u.id_ville = v.id
+                    '; 
+        
 		if(($res = $this->_db->query($requete)) ==	 true)
 		{
 			if($res->num_rows)
 			{
 				while($row = $res->fetch_assoc())
 				{
+					$row['nom'] = trim(utf8_encode($row['nom']));
 					$rows[] = $row;
 				}
 			}
@@ -37,7 +51,7 @@ class Usager extends Modele {
 			throw new Exception("Erreur de requête sur la base de donnée", 1);
 			//$this->_db->error;
 		}
-		return $rows;
+        return $rows;
 	}
 
     /**
@@ -75,7 +89,7 @@ class Usager extends Modele {
         {   
             if(extract($data) > 0)
             {
-                $requete = "INSERT INTO vino__usager (`nom`, `prenom`, `courriel`, `phone`, `adresse`, `id_ville`, `mot_passe`, `confirmpassword`) VALUES ('".$nom. "','".$prenom. "','".$courriel. "','".$phone. "','".$adresse. "','".$id_ville. "','".$mot_passe. "','". $confirmpassword."')";
+                $requete = "INSERT INTO vino__usager (`nom`, `prenom`, `courriel`, `phone`, `adresse`, `id_ville`, `mot_passe`, `confirmpassword`, `image_url`) VALUES ('".$nom. "','".$prenom. "','".$courriel. "','".$phone. "','".$adresse. "','".$id_ville. "','".$mot_passe. "','". $confirmpassword."', '../../assets/img/simon.jpg')";
 
                 $this->_db->query($requete);
             }

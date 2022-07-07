@@ -72,6 +72,7 @@
 				while($row = $res->fetch_assoc())
 				{
 					$row['nom'] = trim(utf8_encode($row['nom']));
+                    $row['note_etoiles'] = $this->getNombreDeNotes($row['id_bouteille'], $row['id_achats']);
 					$rows[] = $row;
 				}
 			}
@@ -141,6 +142,7 @@
 				while($row = $res->fetch_assoc())
 				{
 					$row['nom'] = trim(utf8_encode($row['nom']));
+                    $row['note_etoiles'] = $this->getNombreDeNotes($row['id_bouteille'], $row['id_achats']);
 					$rows[] = $row;
 				}
 			}
@@ -153,6 +155,35 @@
 		return $rows;
 	}
 	
+    public function getNombreDeNotes($id_bouteille, $id_achats){
+        $requette = "SELECT note, COUNT(id_usager), SUM(note) FROM vino__notes as vn
+                    WHERE cellier_bouteille_id_bouteille = ".$id_bouteille."
+                    AND cellier_bouteille_id_achats = ".$id_achats;
+        $res = $this->_db->query($requette);
+        
+        if($res){
+            $row = $res->fetch_row();
+            
+            if(is_array($row) && count($row)>1){
+                //$row[0] c'est le nombre de notes et row[1] c'est la somme des notes
+                if($row[0] == NULL) {
+                    return [
+                        'note_moyenne' => $row[2] / $row[1],
+                        'nombre_notes' =>  '0',
+                    ];
+                } else {
+                    return [
+                        'note_moyenne' => $row[2] / $row[1],
+                        'nombre_notes' =>  $row[1],
+                    ];
+                }
+                
+            }
+            return 0;
+        }
+        return 0;
+    }
+
 	/**
 	 * Cette méthode ajoute une ou des bouteilles au cellier
 	 * @access public
@@ -176,8 +207,8 @@
                 
                 $this->_db->query($requete);
                                 
-                // $requete = "INSERT INTO vino__notes(`note`, `id_usager`, `cellier_bouteille_id_cellier`, `cellier_bouteille_id_bouteille`, `cellier_bouteille_id_achats` ) VALUES ('".$notes. "','". $id_usager. "','". $id_cellier."','". $id_bouteille."','". $id_achats. "')";
-                // $this->_db->query($requete);
+                $requete = "INSERT INTO vino__notes(`note`, `id_usager`, `cellier_bouteille_id_cellier`, `cellier_bouteille_id_bouteille`, `cellier_bouteille_id_achats` ) VALUES (NULL,'". $id_usager. "','". $id_cellier."','". $id_bouteille."','". $id_achats. "')";
+                $this->_db->query($requete);
             }
             return ($this->_db->insert_id ? $this->_db->insert_id : $requete);
         } else {
@@ -444,9 +475,17 @@
 
 			$query = "SET foreign_key_checks = 0";
             $resQuery = $this->_db->query($query);
+
 			$query = "DELETE from vino__cellier_bouteille where id_bouteille = ". $id_bouteille ." AND id_cellier = ". $id_cellier ." AND id_achats = ". $id_achats ;
 			$resQuery = $this->_db->query($query);
-			$query = "SET foreign_key_checks = 1";
+			
+            $query = "DELETE from vino__notes where cellier_bouteille_id_cellier = ". $id_cellier." AND cellier_bouteille_id_bouteille = ". $id_bouteille ." AND cellier_bouteille_id_achats = ". $id_achats;
+			$resQuery = $this->_db->query($query);
+
+            $query = "DELETE from vino__achats where id = ". $id_achats;
+			$resQuery = $this->_db->query($query);
+
+            $query = "SET foreign_key_checks = 1";
             $resQuery = $this->_db->query($query);	
 		}
 		return $resQuery;
@@ -462,22 +501,31 @@
 	{
 		$aSet = Array();
 		$resQuery = false;
-
+        
         $id_bouteille = $param['id_bouteille'];
 		$id_cellier = $param['id_cellier'];
         $id_achats = $param['id_achats'];
-
+        $id_usager = $param['id_usager'];
+        
         if (is_array($param) || is_object($param)) {
-            foreach ($param as $cle => $valeur) {
-                $aSet[] = ($cle . "= '".$valeur. "'");
+
+            foreach ($param as $cle => $valeur) 
+            {
+                if ($cle !== 'id_cellier' && $cle !== 'id_bouteille' && $cle !== 'id_achats' && $cle !== 'id_usager') 
+                {
+                    $aSet[] = ($cle . "= '".$valeur. "'");
+                }
             }
+            
             if(count($aSet) > 0)
             {
                 $query = "Update vino__cellier_bouteille, vino__achats, vino__notes SET ";
                 $query .= join(", ", $aSet);
-                $query .= (" WHERE id_bouteille = ". $id_bouteille ." AND id_cellier = ". $id_cellier ." AND id_achats = ". $id_achats);
+                $query .= (" WHERE id_bouteille = ". $id_bouteille ." AND id = ". $id_achats ." AND cellier_bouteille_id_bouteille = ". $id_bouteille ." AND cellier_bouteille_id_cellier = ". $id_cellier ." AND cellier_bouteille_id_achats = ". $id_achats ." AND id_cellier = ". $id_cellier ." AND id_achats = ". $id_achats);
+                
                 $resQuery = $this->_db->query($query);
             }
+
             return ($resQuery ? $id_bouteille : 0) && ($resQuery ? $id_cellier : 0);
         } else {
             echo "Une erreur s'est produite.";

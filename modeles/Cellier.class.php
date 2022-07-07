@@ -141,6 +141,7 @@
 				while($row = $res->fetch_assoc())
 				{
 					$row['nom'] = trim(utf8_encode($row['nom']));
+                    $row['note_etoiles'] = $this->getNombreDeNotes($row['id_bouteille'], $row['id_achats']);
 					$rows[] = $row;
 				}
 			}
@@ -153,6 +154,35 @@
 		return $rows;
 	}
 	
+    public function getNombreDeNotes($id_bouteille, $id_achats){
+        $requette = "SELECT note, COUNT(id_usager), SUM(note) FROM vino__notes as vn
+                    WHERE cellier_bouteille_id_bouteille = ".$id_bouteille."
+                    AND cellier_bouteille_id_achats = ".$id_achats;
+        $res = $this->_db->query($requette);
+        
+        if($res){
+            $row = $res->fetch_row();
+            
+            if(is_array($row) && count($row)>1){
+                //$row[0] c'est le nombre de notes et row[1] c'est la somme des notes
+                if($row[0] == NULL) {
+                    return [
+                        'note_moyenne' => $row[2] / $row[1],
+                        'nombre_notes' =>  '0',
+                    ];
+                } else {
+                    return [
+                        'note_moyenne' => $row[2] / $row[1],
+                        'nombre_notes' =>  $row[1],
+                    ];
+                }
+                
+            }
+            return 0;
+        }
+        return 0;
+    }
+
 	/**
 	 * Cette méthode ajoute une ou des bouteilles au cellier
 	 * @access public

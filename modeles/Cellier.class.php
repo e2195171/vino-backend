@@ -477,15 +477,20 @@
         $id_usager = $param['id_usager'];
         
         if (is_array($param) || is_object($param)) {
-            
-            foreach ($param as $cle => $valeur) {
-                $aSet[] = ($cle . "= '".$valeur. "'");
+
+            foreach ($param as $cle => $valeur) 
+            {
+                if ($cle !== 'id_cellier' && $cle !== 'id_bouteille' && $cle !== 'id_achats' && $cle !== 'id_usager') 
+                {
+                    $aSet[] = ($cle . "= '".$valeur. "'");
+                }
             }
+            
             if(count($aSet) > 0)
             {
                 $query = "Update vino__cellier_bouteille, vino__achats, vino__notes SET ";
                 $query .= join(", ", $aSet);
-                $query .= " WHERE id_bouteille = ". $id_bouteille ." AND id = ". $id_achats ." AND cellier_bouteille_id_bouteille = ". $id_bouteille ." AND cellier_bouteille_id_cellier = ". $id_cellier ." AND cellier_bouteille_id_achats = ". $id_achats ." AND id_cellier = ". $id_cellier ." AND id_usager = ". $id_usager ." AND id_achats = ". $id_achats;
+                $query .= (" WHERE id_bouteille = ". $id_bouteille ." AND id = ". $id_achats ." AND cellier_bouteille_id_bouteille = ". $id_bouteille ." AND cellier_bouteille_id_cellier = ". $id_cellier ." AND cellier_bouteille_id_achats = ". $id_achats ." AND id_cellier = ". $id_cellier ." AND id_achats = ". $id_achats);
                 
                 $resQuery = $this->_db->query($query);
             }

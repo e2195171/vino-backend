@@ -41,7 +41,7 @@ class Usager extends Modele {
 			{
 				while($row = $res->fetch_assoc())
 				{
-					$row['nom'] = trim(utf8_encode($row['nom']));
+					//$row['nom'] = trim(utf8_encode($row['nom']));
 					$rows[] = $row;
 				}
 			}
@@ -151,7 +151,7 @@ class Usager extends Modele {
 			{
 				while($row = $res->fetch_assoc())
 				{
-					$row['nom'] = trim(utf8_encode($row['nom']));
+					//$row['nom'] = trim(utf8_encode($row['nom']));
 					$rows[] = $row;
 				}
 			}
@@ -207,7 +207,7 @@ class Usager extends Modele {
 			{
 				while($row = $res->fetch_assoc())
 				{
-					$row['nom'] = trim(utf8_encode($row['nom']));
+					//$row['nom'] = trim(utf8_encode($row['nom']));
 					$rows[] = $row;
 				}
 			}

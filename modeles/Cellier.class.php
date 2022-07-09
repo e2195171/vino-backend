@@ -71,7 +71,7 @@
 			{
 				while($row = $res->fetch_assoc())
 				{
-					$row['nom'] = trim(utf8_encode($row['nom']));
+					//$row['nom'] = trim(utf8_encode($row['nom']));
                     $row['note_etoiles'] = $this->getNombreDeNotes($row['id_bouteille'], $row['id_achats']);
 					$rows[] = $row;
 				}
@@ -141,7 +141,7 @@
 			{
 				while($row = $res->fetch_assoc())
 				{
-					$row['nom'] = trim(utf8_encode($row['nom']));
+					//$row['nom'] = trim(utf8_encode($row['nom']));
                     $row['note_etoiles'] = $this->getNombreDeNotes($row['id_bouteille'], $row['id_achats']);
 					$rows[] = $row;
 				}
@@ -306,7 +306,7 @@
 			{
 				while($row = $res->fetch_assoc())
 				{
-					$row['nom'] = trim(utf8_encode($row['nom']));
+					//$row['nom'] = trim(utf8_encode($row['nom']));
 					$rows[] = $row;
 				}
 			}
@@ -351,7 +351,7 @@
 			{
 				while($row = $res->fetch_assoc())
 				{
-					$row['nom'] = trim(utf8_encode($row['nom']));
+					//$row['nom'] = trim(utf8_encode($row['nom']));
 					$rows[] = $row;
 				}
 			}
